@@ -123,7 +123,7 @@ var splitter = loAudioContext.createChannelSplitter(2);
     }
 
     function clearUi() {
-        document.querySelector('label').remove();
+        document.querySelector('.container').remove();
         document.querySelector('#file').remove();
     }
     
