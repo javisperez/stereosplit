@@ -63,37 +63,68 @@ var splitter = loAudioContext.createChannelSplitter(2);
     /**
      * Main functions
      */
-    
+    function readFile(file) {
+        var reader = new FileReader();
+
+        reader.onloadend = function(e) {
+            if (e.target.readyState == FileReader.DONE) {    
+                prepareAndPlay(e.target.result);
+            }
+        };
+        
+        reader.readAsArrayBuffer(file);
+    }
+
     function init() {
         window.addEventListener('resize', resize);
         resize();
         
-        document.querySelector('#file').addEventListener('change', function(){
-            var that = this;
-            var file = this.files[0];
-            var start = 0;
-            var stop = file.size - 1;
-            
-            var reader = new FileReader();
-
-            reader.onloadend = function(evt) {
-                if (evt.target.readyState == FileReader.DONE) {    
-                    var label =                     document.querySelector('label');
-                    that.parentNode.removeChild(that);
-                    label.parentNode.removeChild(label);
-                    LoadAudio(evt.target.result);
-                }
-            };
-            
-            reader.readAsArrayBuffer(file);
+        document.querySelector('#file').addEventListener('change', function() {
+            readFile(this.files[0]);
         });
+
+        document.querySelector('#sample-song').addEventListener('click', function (e) {
+            e.stopPropagation();
+            e.preventDefault();
+
+            loadSampleSong();
+        })
     }
-    
+
+    function loadSampleSong() {
+        var request = new XMLHttpRequest();
+        var loading = document.querySelector('#loading');
+
+        clearUi();
+
+        loading.style.display = 'block';
+
+        request.open('GET', '/Seven Mary Three-Player Piano.mp3', true);
+        request.responseType = 'arraybuffer';
+
+        request.onload = function() {
+            loading.remove();
+            LoadAudio(request.response);
+        };
+
+        request.send();
+    }
+
+    function prepareAndPlay(audio) {
+        clearUi();
+        LoadAudio(audio);
+    }
+
     function resize() {
         loCanvas.width  = window.innerWidth;
         loCanvas.height = window.innerHeight;
 
         RADIUS_LIMIT = loCanvas.width;
+    }
+
+    function clearUi() {
+        document.querySelector('label').remove();
+        document.querySelector('#file').remove();
     }
     
     function generateParticles(aiParticlesQty, x, y){
