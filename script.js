@@ -99,7 +99,7 @@ var splitter = loAudioContext.createChannelSplitter(2);
 
         loading.style.display = 'block';
 
-        request.open('GET', '/Seven Mary Three-Player Piano.mp3', true);
+        request.open('GET', 'Seven Mary Three-Player Piano.mp3', true);
         request.responseType = 'arraybuffer';
 
         request.onload = function() {
